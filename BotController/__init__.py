@@ -7,12 +7,11 @@ from time import sleep as snooze
 from Debug import Log as log
 
 global uname, pword, sex, bdaymonth, bdayday, bdayyear, amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled;
-uname="";pword="";sex="";bdaymonth="";successUrl="";proxyURL="";
-bdayday=0;bdayyear=0;amountOfTries=0;waitTime=0;
+uname="";pword="";sex="";bdaymonth="";successUrl="";proxyURL="";bdayday="";bdayyear="";amountOfTries=0;waitTime=0;
 proxyEnabled = False;
 
 #Info
-def setupUser(username, password=None, gender="Male", bdayMonth="Aug", bdayDay=7, bdayYear=2002):
+def setupUser(username, password=None, gender="Male", bdayMonth="Aug", bdayDay="7", bdayYear="2002"):
     global uname, pword, sex, bdaymonth, bdayday, bdayyear;
     uname = username
     if(password == None):
@@ -34,8 +33,8 @@ def configIni(**kwargs):
 
 def createUser():
     global uname, pword, sex, bdaymonth, bdayday, bdayyear, amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled;
-    #executeableDriver = 'chromedriver.exe'
-    executeableDriver = r'phantomjs-2.1.1-windows\phantomjs-2.1.1-windows\bin\phantomjs.exe'
+    executeableDriver = 'chromedriver.exe'
+    #executeableDriver = 'phantomjs.exe'
 
     #chromeOptions = Options()
     #chromeOptions.add_argument("--headless")
@@ -48,8 +47,8 @@ def createUser():
     else:
         service_args = []
 
-    #browser = webdriver.Chrome(executeableDriver)
-    browser = webdriver.PhantomJS(executeableDriver,service_args=service_args)
+    browser = webdriver.Chrome(executeableDriver)
+    #browser = webdriver.PhantomJS(executeableDriver)#,service_args=service_args
     browser.get('https://www.roblox.com')
 
     print("{0}:{1}:{2}:{3}/{4}-{5}".format(uname,pword,sex,bdaymonth,bdayday,bdayyear),end="", flush=True)
@@ -77,6 +76,7 @@ def createUser():
     password2Id.send_keys(pword);
     gender.click()
     browser.find_element_by_xpath('//*[@id="agreeTermsPrivacyLabel"]').click() #//*[@id="agreeTermsPrivacyLabel"]
+
     browser.find_element_by_xpath('//*[@id="signup-button"]').click()
 
     CurrURL = browser.current_url
@@ -99,6 +99,6 @@ def createUser():
     browser.save_screenshot('screenEnd.png')
     #browser.quit()
 
-setupUser("JorgeCrawford39")
-configIni()
-createUser()
+#setupUser("JorgeCrawford39")
+#configIni()
+#createUser()
