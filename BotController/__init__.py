@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep as snooze
 from Debug import Log as log
 from os import path, makedirs
+from os.path import join
 import pickle
 
 #Declaring and assigning globals
@@ -28,9 +29,9 @@ def setupUser(username, password=None, gender="Male", bdayMonth="Aug", bdayDay="
 
 def configIni(**kwargs):
     global amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled, outputFolder;
-    amountOfTries = 5  #The amount of attempts to look for a successful account creation.
-    waitTime = 2  #The amount of time in seconds till it checks again for successful account creation.
-    successUrl = "roblox.com/games"  #The url that is redirected to after a successful account creation.
+    amountOfTries = 18  #5The amount of attempts to look for a successful account creation.
+    waitTime = 10  #2The amount of time in seconds till it checks again for successful account creation.
+    successUrl = "roblox.com/games"  #The url that is redirected to after a successful account creation. #https://www.roblox.com/games?SortFilter=default&TimeFilter=0
     proxyURL = "140.227.81.53:3128"
     proxyEnabled = False
     outputFolder = "accounts"
@@ -40,9 +41,11 @@ def createUser():
     executeableDriver = 'chromedriver.exe'
     #executeableDriver = 'phantomjs.exe'
 
-    #chromeOptions = Options()
+    chromeOptions = Options()
     #chromeOptions.add_argument("--headless")
+    chromeOptions.add_argument("--proxy-server="+proxyURL)
 
+    '''
     if(proxyEnabled):
         service_args = [
         '--proxy={}'.format(proxyURL),
@@ -50,8 +53,9 @@ def createUser():
         ]
     else:
         service_args = []
+        '''
 
-    browser = webdriver.Chrome(executeableDriver)
+    browser = webdriver.Chrome(executeableDriver, chrome_options=chromeOptions)
     #browser = webdriver.PhantomJS(executeableDriver)#,service_args=service_args
     browser.get('https://www.roblox.com')
 
@@ -98,13 +102,13 @@ def createUser():
         #Created account successfully.
         print("...Account was created.")
         try:
-            makedirs(path.combine(outputFolder,"cookies"))
+            makedirs(join(outputFolder,"cookies"))
         except: pass
         if not(proxyEnabled):
-            open(path.combine(outputFolder,uname),'w').write("{0}:{1}".format(uname,pword))
+            open(join(outputFolder,uname),'w').write("{0}:{1}".format(uname,pword))
         else:
-            open(path.combine(outputFolder,uname),'w').write("{0}:{1}.{2}".format(uname,pword,proxyURL))
-        pickle.dump(browser.get_cookies(), open(path.combine(outputFolder,"cookies",uname+".pkl"), "wb"))
+            open(join(outputFolder,uname),'w').write("{0}:{1}.{2}".format(uname,pword,proxyURL))
+        pickle.dump(browser.get_cookies(), open(join(outputFolder,"cookies",uname+".pkl"), "wb"))
     else:
         #Failed creating account.
         print("...Account could not be created. Landing page: {}".format(CurrURL))
@@ -112,5 +116,12 @@ def createUser():
     browser.quit()
 
 #setupUser("JorgeCrawford39")
-#configIni()
+configIni()
 #createUser()
+
+
+'''
+cookies = pickle.load(open("cookies.pkl", "rb"))
+for cookie in cookies:
+    driver.add_cookie(cookie)
+    '''

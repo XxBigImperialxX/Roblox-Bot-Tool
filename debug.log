@@ -1,0 +1,2 @@
+[0706/230249.469:ERROR:process_reader_win.cc(123)] NtOpenThread: {Adgang nægtet} En proces har anmodet om adgang til et objekt, men har ikke fået disse rettigheder. (0xc0000022)
+[0706/230249.472:ERROR:exception_snapshot_win.cc(88)] thread ID 33312 not found in process
