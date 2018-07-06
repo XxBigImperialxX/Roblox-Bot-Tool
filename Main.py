@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 from time import sleep as snooze
+from Debug import Log as log
 
 #Info
 uname = "JorgeCrawford38"
@@ -18,11 +19,7 @@ amountOfTries = 5  #The amount of attempts to look for a successful account crea
 waitTime = 2  #The amount of time in seconds till it checks again for successful account creation.
 successUrl = "roblox.com/games"  #The url that is redirected to after a successful account creation.
 
-print('''
-Username: {0}
-Password: {1}
-Gender: {2}
-Birthdate: {3}/{4}/{5}'''.format(uname,pword,sex,bdaymonth,bdayday,bdayyear))
+#Info line
 
 #executeableDriver = 'chromedriver.exe'
 executeableDriver = r'phantomjs-2.1.1-windows\phantomjs-2.1.1-windows\bin\phantomjs.exe'
@@ -34,6 +31,7 @@ executeableDriver = r'phantomjs-2.1.1-windows\phantomjs-2.1.1-windows\bin\phanto
 browser = webdriver.PhantomJS(executeableDriver)
 browser.get('https://www.roblox.com')
 
+print("{0}:{1}:{2}:{3}/{4}-{5}".format(uname,pword,sex,bdaymonth,bdayday,bdayyear),end="", flush=True)
 
 #Ids and classes
 username = browser.find_element_by_id("signup-username")
@@ -61,22 +59,22 @@ browser.find_element_by_xpath('//*[@id="agreeTermsPrivacyLabel"]').click() #//*[
 browser.find_element_by_xpath('//*[@id="signup-button"]').click()
 
 CurrURL = browser.current_url
-print(CurrURL)
+log(CurrURL)
 tries = 0
 while not successUrl in CurrURL:
     if(tries < amountOfTries):
         CurrURL = browser.current_url
-        print("Trying again, Tries: {0}/{1}; URL: {2}".format(tries, amountOfTries, CurrURL))
+        log("Trying again, Tries: {0}/{1}; URL: {2}".format(tries, amountOfTries, CurrURL))
         snooze(waitTime)
         tries += 1
     else: break;
 browser.save_screenshot('screen.png')
 if(successUrl in CurrURL):
     #Created account successfully.
-    print("Account was created.")
+    print("...Account was created.")
 else:
     #Failed in creating account.
-    print("Account could not be created. Landing page: {}".format(CurrURL))
+    print("...Account could not be created. Landing page: {}".format(CurrURL))
 browser.save_screenshot('screenEnd.png')
 
 #browser.quit()
