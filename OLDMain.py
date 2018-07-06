@@ -77,4 +77,4 @@ else:
     print("...Account could not be created. Landing page: {}".format(CurrURL))
 browser.save_screenshot('screenEnd.png')
 
-#browser.quit()
+browser.quit()

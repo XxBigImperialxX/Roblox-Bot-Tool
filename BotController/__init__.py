@@ -5,9 +5,12 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 from time import sleep as snooze
 from Debug import Log as log
+from os import path, makedirs
+import pickle
 
-global uname, pword, sex, bdaymonth, bdayday, bdayyear, amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled;
-uname="";pword="";sex="";bdaymonth="";successUrl="";proxyURL="";bdayday="";bdayyear="";amountOfTries=0;waitTime=0;
+#Declaring and assigning globals
+global uname, pword, sex, bdaymonth, bdayday, bdayyear, amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled, outputFolder;
+uname="";pword="";sex="";bdaymonth="";successUrl="";proxyURL="";bdayday="";bdayyear="";amountOfTries=0;waitTime=0;outputFolder="";
 proxyEnabled = False;
 
 #Info
@@ -24,12 +27,13 @@ def setupUser(username, password=None, gender="Male", bdayMonth="Aug", bdayDay="
     bdayyear = bdayYear
 
 def configIni(**kwargs):
-    global amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled;
+    global amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled, outputFolder;
     amountOfTries = 5  #The amount of attempts to look for a successful account creation.
     waitTime = 2  #The amount of time in seconds till it checks again for successful account creation.
     successUrl = "roblox.com/games"  #The url that is redirected to after a successful account creation.
     proxyURL = "140.227.81.53:3128"
     proxyEnabled = False
+    outputFolder = "accounts"
 
 def createUser():
     global uname, pword, sex, bdaymonth, bdayday, bdayyear, amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled;
@@ -53,17 +57,16 @@ def createUser():
 
     print("{0}:{1}:{2}:{3}/{4}-{5}".format(uname,pword,sex,bdaymonth,bdayday,bdayyear),end="", flush=True)
 
-    #Ids and classes
+    #Assigns different ids from the homepage variable names.
     usernameId = browser.find_element_by_id("signup-username")
     passwordId = browser.find_element_by_id("signup-password")
     password2Id = browser.find_element_by_id("signup-password-confirm")
-    #termsofService = browser.find_element_by_xpath("//*[@id="agreeTermsPrivacyLabel"]").click() #//*[@id="agreeTermsPrivacyLabel"]
     gender = browser.find_element_by_id(sex+"Button")
     month = browser.find_element_by_id("MonthDropdown")
     day = browser.find_element_by_id("DayDropdown")
     year = browser.find_element_by_id("YearDropdown")
 
-    #BDAY:
+    #BDAY: Sets the birthdate.
     select = Select(month)
     select.select_by_value(bdaymonth)
     select = Select(day)
@@ -71,14 +74,15 @@ def createUser():
     select = Select(year)
     select.select_by_value(bdayyear)
 
+    #Uses the ids assigned before, clicks and types in boxes.
     usernameId.send_keys(uname);
     passwordId.send_keys(pword);
     password2Id.send_keys(pword);
     gender.click()
-    browser.find_element_by_xpath('//*[@id="agreeTermsPrivacyLabel"]').click() #//*[@id="agreeTermsPrivacyLabel"]
-
+    browser.find_element_by_xpath('//*[@id="agreeTermsPrivacyLabel"]').click()
     browser.find_element_by_xpath('//*[@id="signup-button"]').click()
 
+    #Checks weather the registration was successful.
     CurrURL = browser.current_url
     log(CurrURL)
     tries = 0
@@ -93,11 +97,19 @@ def createUser():
     if(successUrl in CurrURL):
         #Created account successfully.
         print("...Account was created.")
+        try:
+            makedirs(path.combine(outputFolder,"cookies"))
+        except: pass
+        if not(proxyEnabled):
+            open(path.combine(outputFolder,uname),'w').write("{0}:{1}".format(uname,pword))
+        else:
+            open(path.combine(outputFolder,uname),'w').write("{0}:{1}.{2}".format(uname,pword,proxyURL))
+        pickle.dump(browser.get_cookies(), open(path.combine(outputFolder,"cookies",uname+".pkl"), "wb"))
     else:
-        #Failed in creating account.
+        #Failed creating account.
         print("...Account could not be created. Landing page: {}".format(CurrURL))
-    browser.save_screenshot('screenEnd.png')
-    #browser.quit()
+    browser.save_screenshot('screenshot {}.png'.format(uname))
+    browser.quit()
 
 #setupUser("JorgeCrawford39")
 #configIni()
