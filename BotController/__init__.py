@@ -37,8 +37,8 @@ def configIni(**kwargs):
 
 def createUser():
     global uname, pword, sex, bdaymonth, bdayday, bdayyear, amountOfTries, waitTime, successUrl, proxyURL, proxyEnabled;
-    executeableDriver = 'chromedriver.exe'
-    #executeableDriver = 'phantomjs.exe'
+    #executeableDriver = 'chromedriver.exe'
+    executeableDriver = 'phantomjs.exe'
 
     #chromeOptions = Options()
     #chromeOptions.add_argument("--headless")
@@ -51,8 +51,8 @@ def createUser():
     else:
         service_args = []
 
-    browser = webdriver.Chrome(executeableDriver)
-    #browser = webdriver.PhantomJS(executeableDriver)#,service_args=service_args
+    #browser = webdriver.Chrome(executeableDriver)
+    browser = webdriver.PhantomJS(executeableDriver)#,service_args=service_args
     browser.get('https://www.roblox.com')
 
     print("{0}:{1}:{2}:{3}/{4}-{5}".format(uname,pword,sex,bdaymonth,bdayday,bdayyear),end="", flush=True)
