@@ -4,4 +4,4 @@ from time import gmtime, strftime
 Logname = strftime("Debug-%H.%M.%S.log", gmtime())
 
 def Log(s):
-    open(Logname+'\n','a').write(s)
+    open(Logname,'a').write(s+'\n')
